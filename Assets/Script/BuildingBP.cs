@@ -9,12 +9,14 @@ public class BuildingBP : MonoBehaviour
     public GameObject building;
     Vector3 spawnPos;
 
-    List<Material> buildingMaterial;
+    [SerializeField] private List<Material> buildingMaterial;
+    // order 0: Transparent Material
+    // order 1: Failed Material
 
     private void Start() {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Renderer renderer = GetComponent<Renderer>();
-        renderer.material = buildingMaterial[1];
+        Renderer renderer = GetComponentInChildren<MeshRenderer>();
+        renderer.material = buildingMaterial[0];
 
         if(Physics.Raycast(ray, out hit, 50000.0f, (1 << 0))) {
             transform.position = hit.point;
@@ -34,6 +36,20 @@ public class BuildingBP : MonoBehaviour
             spawnPos = transform.GetChild(0).transform.position;
             Instantiate(building, spawnPos, transform.rotation);
             Destroy(gameObject);
+        }
+    }
+
+    private void OnCollisionStay(Collision other) {
+        //collide with any object
+        if(other.gameObject != null) {
+            GetComponentInChildren<Renderer>().material = buildingMaterial[1];
+        }
+    }
+
+    private void OnCollisionExit(Collision other)
+    {
+        if(other.gameObject != null) {
+            GetComponentInChildren<Renderer>().material = buildingMaterial[0];
         }
     }
 }
