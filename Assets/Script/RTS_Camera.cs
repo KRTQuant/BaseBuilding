@@ -7,7 +7,8 @@ public class RTS_Camera : MonoBehaviour
     public float panSpeed = 20f;
     public float panBorderThickness = 10f;
 
-    public Vector2 panLimit;
+    public Vector2 panLimit_x;
+    public Vector2 panLimit_y;
 
     private void Update() {
         Vector3 pos = transform.position;
@@ -25,8 +26,8 @@ public class RTS_Camera : MonoBehaviour
             pos.x -= panSpeed * Time.deltaTime;
         }
 
-        pos.x = Mathf.Clamp(pos.x, -panLimit.x, panLimit.x);
-        pos.z = Mathf.Clamp(pos.z, -panLimit.y, panLimit.y);
+        pos.x = Mathf.Clamp(pos.x, panLimit_x.x, panLimit_x.y);
+        pos.z = Mathf.Clamp(pos.z, panLimit_y.x, panLimit_y.y);
         transform.position = pos;
     }
 }

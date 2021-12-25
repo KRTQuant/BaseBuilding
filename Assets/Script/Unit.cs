@@ -27,8 +27,8 @@ public class Unit : MonoBehaviour {
     [Header("Ability")]
     [SerializeField] private Task task;
     [SerializeField] private float resourceInventoryAmount;
-    [SerializeField] private float gatherTimer;
-    [SerializeField] private float gatherDelay;
+    [SerializeField] public float gatherTimer;
+    [SerializeField] public float gatherDelay;
     [SerializeField] private float stopDistOffset;
     [SerializeField] private TextMesh inventoryTextMesh;
 
@@ -65,7 +65,7 @@ public class Unit : MonoBehaviour {
                 callbackFunc = null;
                 //get resource node position from GameManager
                 resourceNode = GameManager.GetMineNode_Static();
-                Debug.Log(resourceNode);
+                //Debug.Log(resourceNode);
                 if(resourceNode != null) {
                 //set task from "Idle" to "MoveToResource"
                     task = Task.MoveToResource;
@@ -82,7 +82,7 @@ public class Unit : MonoBehaviour {
                             //after arrived resource node
                             //set task from "MoveToResource" to "GatheringResource"
                             task = Task.GatheringResource;
-                            Debug.Log(task);
+                            //Debug.Log(task);
                         });
                     } else {
                         task = Task.Idle;
