@@ -35,6 +35,7 @@ public class BuildingBP : MonoBehaviour
 
         if(Input.GetMouseButton(0)) {
             spawnPos = transform.GetChild(0).transform.position;
+            spawnPos = new Vector3(spawnPos.x, -6.4f, spawnPos.z);
             Instantiate(building, spawnPos, transform.rotation);
             Destroy(gameObject);
         }

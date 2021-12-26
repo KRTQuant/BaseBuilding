@@ -7,8 +7,8 @@ using UnityEngine.AI;
 public class GameManager : MonoBehaviour
 {
     private static GameManager instance;
-    private int woodGoal;
-    private int goldGoal;
+    [SerializeField] private int woodGoal;
+    [SerializeField] private int goldGoal;
     [SerializeField] private Unit unit;
     [SerializeField] private Transform buildingNode;
     [SerializeField] private Transform storageNode;
@@ -21,11 +21,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private List<ResourceNode> woodNode;
     [SerializeField] private List<ResourceNode> tempWoodNode;
 
+    [SerializeField] private Transform winPanel;
+
     private void Awake()
     {
         instance = this;
         unit = GetComponent<Unit>();
-
+        winPanel = GameObject.Find("Canvas").transform.Find("WinPanel");
+        winPanel.gameObject.SetActive(false);
     }
 
     private ResourceNode GetMineNode() {
@@ -101,6 +104,17 @@ public class GameManager : MonoBehaviour
 
         if(woodInStock >= woodGoal && goldInStock >= goldGoal)  {
             Debug.Log("You win");
+            winPanel.gameObject.SetActive(true);
+            StartCoroutine(DelayAndAction(ChangeScene));
         }
+    }
+
+    private IEnumerator DelayAndAction(Action func) {
+        yield return new WaitForSeconds(3);
+        func();
+    }
+
+    private void ChangeScene() {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
     }
 }

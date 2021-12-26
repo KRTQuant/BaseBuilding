@@ -38,7 +38,7 @@ public class HouseScript : MonoBehaviour
             Debug.LogError("buildingName, upgradeBuilding or createUnitPanel is missing");
         }
         spawnpoint = transform.Find("SpawnPoint");
-        ProduceUnit(1);
+        FreeProduceUnit();
     }
 
     private void OnMouseDown() {
@@ -87,10 +87,12 @@ public class HouseScript : MonoBehaviour
     }
 
     public void UpgradeBuilding() {
-        if(buildingLevel < maxBuildingLevel){
+        if(buildingLevel < maxBuildingLevel && (GameResources.GetGoldAmount() >= upgradeGoldCost && GameResources.GetWoodAmount() >= upgradeWoodCost)){
             //increase level
             buildingLevel++;
             maxBotAmount++;
+            GameResources.DecreaseGoldAmount(upgradeGoldCost);
+            GameResources.DecreaseWoodAmount(upgradeWoodCost);
             Text levelText = upgradeBuildingPanel.transform.Find("LevelText").GetComponent<Text>();
             levelText.text = GetCurrentBuildingLevel() + " / " + GetMaxBuildingLevel();
             //increase unit from this building stats
@@ -104,25 +106,27 @@ public class HouseScript : MonoBehaviour
         }
     }
 
-    public void ProduceUnit(int amount) {
-        if(botAmount < maxBotAmount){
-            for(int i = 0; i < amount; i++) {
-                GameObject unit = Instantiate<GameObject>(unitPrefab, spawnpoint.position, Quaternion.identity);
-                unitList.Add(unit);
+    // public void ProduceUnit(int amount) {
+    //     if(botAmount < maxBotAmount && (GameResources.GetGoldAmount() >= botGoldCost && GameResources.GetWoodAmount() >= botWoodCost)){
+    //         for(int i = 0; i < amount; i++) {
+    //             GameObject unit = Instantiate<GameObject>(unitPrefab, spawnpoint.position, Quaternion.identity);
+    //             unitList.Add(unit);
 
-                unit.GetComponent<NavMeshAgent>().speed += 0.5f * buildingLevel;
-                //decrease mining time
-                unit.GetComponent<Unit>().gatherDelay -= 0.2f * buildingLevel;
-                unit.GetComponent<Unit>().gatherTimer = unit.GetComponent<Unit>().gatherDelay;
-                botAmount++;
-                Text botAmountText = createUnitPanel.transform.Find("BotAmountText").GetComponent<Text>();
-                botAmountText.text = GetCurrentBotAmount() + " / " + GetMaxBotAmount();
-            }
-        }
-    }
+    //             unit.GetComponent<NavMeshAgent>().speed += 0.5f * buildingLevel;
+    //             //decrease mining time
+    //             unit.GetComponent<Unit>().gatherDelay -= 0.2f * buildingLevel;
+    //             unit.GetComponent<Unit>().gatherTimer = unit.GetComponent<Unit>().gatherDelay;
+    //             botAmount++;
+    //             Text botAmountText = createUnitPanel.transform.Find("BotAmountText").GetComponent<Text>();
+    //             botAmountText.text = GetCurrentBotAmount() + " / " + GetMaxBotAmount();
+    //         }
+    //     }
+    // }
 
-        public void ProduceUnit() {
-        if(botAmount < maxBotAmount){
+    public void ProduceUnit() {
+        if(botAmount < maxBotAmount && (GameResources.GetGoldAmount() >= botGoldCost && GameResources.GetWoodAmount() >= botWoodCost)) {
+            GameResources.DecreaseGoldAmount(botGoldCost);
+            GameResources.DecreaseWoodAmount(botWoodCost);
             GameObject unit = Instantiate<GameObject>(unitPrefab, spawnpoint.position, Quaternion.identity);
             unitList.Add(unit);
 
@@ -134,5 +138,19 @@ public class HouseScript : MonoBehaviour
             Text botAmountText = createUnitPanel.transform.Find("BotAmountText").GetComponent<Text>();
             botAmountText.text = GetCurrentBotAmount() + " / " + GetMaxBotAmount();
         }
+
+    }
+
+    public void FreeProduceUnit() {
+            GameObject unit = Instantiate<GameObject>(unitPrefab, spawnpoint.position, Quaternion.identity);
+            unitList.Add(unit);
+
+            unit.GetComponent<NavMeshAgent>().speed += 0.5f * buildingLevel;
+            //decrease mining time
+            unit.GetComponent<Unit>().gatherDelay -= 0.2f * buildingLevel;
+            unit.GetComponent<Unit>().gatherTimer = unit.GetComponent<Unit>().gatherDelay;
+            botAmount++;
+            Text botAmountText = createUnitPanel.transform.Find("BotAmountText").GetComponent<Text>();
+            botAmountText.text = GetCurrentBotAmount() + " / " + GetMaxBotAmount();
     }
 }
