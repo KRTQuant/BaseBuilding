@@ -25,5 +25,7 @@ public class UI_Button : MonoBehaviour
     private IEnumerator DelayAndLoadScene() {
         yield return new WaitForSeconds(2.5f);
         SceneManager.LoadScene("Scene1");
+        FindObjectOfType<AudioManager>().Play("Stage1");
+        FindObjectOfType<AudioManager>().Stop("MainMenu");
     }
 }

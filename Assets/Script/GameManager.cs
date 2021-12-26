@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private List<ResourceNode> tempWoodNode;
 
     [SerializeField] private Transform winPanel;
+    [SerializeField] private bool winGame;
 
     private void Awake()
     {
@@ -102,9 +103,11 @@ public class GameManager : MonoBehaviour
         int woodInStock = GameResources.GetWoodAmount();
         int goldInStock = GameResources.GetGoldAmount();
 
-        if(woodInStock >= woodGoal && goldInStock >= goldGoal)  {
+        if(woodInStock >= woodGoal && goldInStock >= goldGoal && winGame == false)  {
             Debug.Log("You win");
+            FindObjectOfType<AudioManager>().Play("Victory");
             winPanel.gameObject.SetActive(true);
+            winGame = true;
             StartCoroutine(DelayAndAction(ChangeScene));
         }
     }
@@ -116,5 +119,7 @@ public class GameManager : MonoBehaviour
 
     private void ChangeScene() {
         UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+        FindObjectOfType<AudioManager>().Stop("Stage1");
+        FindObjectOfType<AudioManager>().Play("MainMenu");
     }
 }
