@@ -209,7 +209,8 @@ public class Unit : MonoBehaviour {
         Debug.Log("He clicked me");
         unitNameText = GameObject.Find("UnitName").GetComponent<Text>();
         unitNameText.text = gameObject.name;
-
+        button1.onClick.RemoveAllListeners();
+        button2.onClick.RemoveAllListeners();
         button1.onClick.AddListener(SetGoldNode);
         button1.transform.Find("Text").GetComponent<Text>().text = "Mining";
         button2.onClick.AddListener(SetWoodNode);

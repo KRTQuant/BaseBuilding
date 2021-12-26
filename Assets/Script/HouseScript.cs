@@ -51,8 +51,9 @@ public class HouseScript : MonoBehaviour
             //access building level text
             Text levelText = upgradeBuildingPanel.transform.Find("LevelText").GetComponent<Text>();
             Text buildingText = upgradeBuildingPanel.transform.Find("BuildingText").GetComponent<Text>();
-            levelText.text = GetCurrentBuildingLevel() + " / " + GetMaxBuildingLevel();
-            buildingText.fontSize = 40;
+            levelText.text = GetCurrentBuildingLevel() + " / " + GetMaxBuildingLevel() + " \n " +"Gold: "+ upgradeGoldCost.ToString() + " \n" + "Wood: " + upgradeWoodCost;
+            
+            levelText.fontSize = 15;
             buildingText.text = "Building";
             Button upgradeButton = upgradeBuildingPanel.transform.Find("UpgradeButton").GetComponent<Button>();
             upgradeBuildingPanel.gameObject.SetActive(true);
@@ -61,7 +62,8 @@ public class HouseScript : MonoBehaviour
             upgradeButton.onClick.AddListener(UpgradeBuilding);
             //display produce bot panel
             Text botAmountText = createUnitPanel.transform.Find("BotAmountText").GetComponent<Text>();
-            botAmountText.text = GetCurrentBotAmount() + " / " + GetMaxBotAmount();
+            botAmountText.fontSize = 15;
+            botAmountText.text = GetCurrentBotAmount() + " / " + GetMaxBotAmount() + " \n " +"Gold: "+ botGoldCost + " \n" + "Wood: " + botWoodCost;
             Button createUnitButton = createUnitPanel.transform.Find("CreateUnitButton").GetComponent<Button>();
             createUnitButton.transform.parent.gameObject.SetActive(true);
             createUnitButton.onClick.RemoveAllListeners();
