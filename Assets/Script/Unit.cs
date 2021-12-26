@@ -11,10 +11,15 @@ public class Unit : MonoBehaviour {
         MoveToResource,
         GatheringResource,
         MoveToStorage,
-        MoveToConSite
     }
 
-    [Header("Transfrom")]
+    [Header("Resource Node")]
+
+    [SerializeField] public ResourceType resourceType;
+    public enum ResourceType {
+        Wood,
+        Gold
+    }
     [SerializeField] private ResourceNode resourceNode;
     [SerializeField] private Transform storageNode;
 
@@ -36,8 +41,6 @@ public class Unit : MonoBehaviour {
     [SerializeField] private Text unitNameText;
     [SerializeField] private Button button1;
     [SerializeField] private Button button2;
-    [SerializeField] private Button button3;
-    [SerializeField] private Button button4;
 
     private void Awake() {
         agent = GetComponent<NavMeshAgent>();
@@ -48,8 +51,6 @@ public class Unit : MonoBehaviour {
 
         button1 = GameObject.Find("Button1").GetComponent<Button>();
         button2 = GameObject.Find("Button2").GetComponent<Button>();
-        button3 = GameObject.Find("Button3").GetComponent<Button>();
-        button4 = GameObject.Find("Button4").GetComponent<Button>();
     }
 
     private void Update()
@@ -63,8 +64,11 @@ public class Unit : MonoBehaviour {
             case Task.Idle:
                 //Debug.Log("Idle");
                 callbackFunc = null;
+                if(resourceType == ResourceType.Wood)
+                    resourceNode = GameManager.GetWoodNode_Static();
+                if(resourceType == ResourceType.Gold)
+                    resourceNode = GameManager.GetMineNode_Static();
                 //get resource node position from GameManager
-                resourceNode = GameManager.GetMineNode_Static();
                 //Debug.Log(resourceNode);
                 if(resourceNode != null) {
                 //set task from "Idle" to "MoveToResource"
@@ -97,10 +101,18 @@ public class Unit : MonoBehaviour {
                     MoveTo(storageNode.position, () => { 
                         //after arrived resource node
                         if(resourceInventoryAmount > 0) { //if hold any resource
-                            GameResources.AddGoldAmount((int)resourceInventoryAmount);
-                            Debug.Log(GameResources.GetGoldAmount());
-                            GameManager.IncreaseGold_Static((int)resourceInventoryAmount); //increase gold in GameManager
-                            resourceInventoryAmount = 0; //set resouce in inventory to zero
+                            if(resourceType == ResourceType.Gold) {
+                                GameResources.AddGoldAmount((int)resourceInventoryAmount);
+                                Debug.Log(GameResources.GetGoldAmount());
+                                GameManager.IncreaseGold_Static((int)resourceInventoryAmount); //increase gold in GameManager
+                                resourceInventoryAmount = 0; //set resouce in inventory to zero
+                            }
+                            if(resourceType == ResourceType.Wood) {
+                                GameResources.AddWoodAmount((int)resourceInventoryAmount);
+                                Debug.Log(GameResources.GetWoodAmount());
+                                GameManager.IncreaseWood_Static((int)resourceInventoryAmount); //increase gold in GameManager
+                                resourceInventoryAmount = 0; //set resouce in inventory to zero
+                            }
                         }
                         //set task from "MoveToStorage" to "Idle"
                         task = Task.Idle;
@@ -182,8 +194,15 @@ public class Unit : MonoBehaviour {
         }
     }
 
-    public void SetResouceNode() {
+    public void SetGoldNode() {
         resourceNode = GameManager.GetMineNode_Static();
+        resourceInventoryAmount = 0;
+        resourceType = ResourceType.Gold;
+    }
+    public void SetWoodNode() {
+        resourceNode = GameManager.GetWoodNode_Static();
+        resourceInventoryAmount = 0;
+        resourceType = ResourceType.Gold;
     }
 
     private void OnMouseDown()  {
@@ -191,10 +210,9 @@ public class Unit : MonoBehaviour {
         unitNameText = GameObject.Find("UnitName").GetComponent<Text>();
         unitNameText.text = gameObject.name;
 
-        button1.onClick.AddListener(SetResouceNode);
+        button1.onClick.AddListener(SetGoldNode);
         button1.transform.Find("Text").GetComponent<Text>().text = "Mining";
-        button2.onClick.AddListener(SetResouceNode);
-        button3.onClick.AddListener(SetResouceNode);
-        button4.onClick.AddListener(SetResouceNode);
+        button2.onClick.AddListener(SetWoodNode);
+        button2.transform.Find("Text").GetComponent<Text>().text = "Wood Cutting";
     }
 }

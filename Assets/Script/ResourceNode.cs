@@ -14,6 +14,8 @@ public class ResourceNode : MonoBehaviour {
         Gold
     }
 
+    [SerializeField] private ResourceType resourceType;
+
     private void Awake() {
         resourceNodeTransform = this.transform;
         boxCollider = GetComponent<BoxCollider>();

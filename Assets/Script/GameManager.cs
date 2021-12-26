@@ -7,15 +7,19 @@ using UnityEngine.AI;
 public class GameManager : MonoBehaviour
 {
     private static GameManager instance;
-
+    private int woodGoal;
+    private int goldGoal;
     [SerializeField] private Unit unit;
     [SerializeField] private Transform buildingNode;
     [SerializeField] private Transform storageNode;
 
     [SerializeField] private int goldStock;
+    [SerializeField] private int woodStock;
 
     [SerializeField] private List<ResourceNode> mineNode;
     [SerializeField] private List<ResourceNode> tempMineNode;
+    [SerializeField] private List<ResourceNode> woodNode;
+    [SerializeField] private List<ResourceNode> tempWoodNode;
 
     private void Awake()
     {
@@ -46,6 +50,27 @@ public class GameManager : MonoBehaviour
         return instance.GetMineNode();
     }
 
+    private ResourceNode GetWoodNode() {
+        List<ResourceNode> tmpWoodNode = new List<ResourceNode>(woodNode);
+        tempWoodNode = tmpWoodNode;
+        for(int i = 0; i < tmpWoodNode.Count; i++) {
+            if(!tmpWoodNode[i].HasResource()) {
+                tmpWoodNode.RemoveAt(i);
+                i--;
+            }
+        }
+        if(tmpWoodNode.Count > 0) {
+            ResourceNode node = woodNode[UnityEngine.Random.Range(0, woodNode.Count)];
+            Debug.Log(node.gameObject.name);
+            return node;
+        } else {
+            return null;
+        }
+    }
+
+    public static ResourceNode GetWoodNode_Static() {
+        return instance.GetWoodNode();
+    }
     public Transform GetStorage() {
         return storageNode;
     }
@@ -60,5 +85,22 @@ public class GameManager : MonoBehaviour
 
     public static int IncreaseGold_Static(int amount) {
         return instance.IncreaseGold(amount);
+    }
+
+    public int IncreaseWood(int amount) {
+        return woodStock += amount;
+    }
+
+    public static int IncreaseWood_Static(int amount) {
+        return instance.IncreaseWood(amount);
+    }
+
+    private void Update() {
+        int woodInStock = GameResources.GetWoodAmount();
+        int goldInStock = GameResources.GetGoldAmount();
+
+        if(woodInStock >= woodGoal && goldInStock >= goldGoal)  {
+            Debug.Log("You win");
+        }
     }
 }

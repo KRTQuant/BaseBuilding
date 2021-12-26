@@ -16,6 +16,12 @@ public class HouseScript : MonoBehaviour
     [SerializeField] private Transform spawnpoint;
     [SerializeField] private GameObject unitPrefab;
 
+    [SerializeField] private int botWoodCost;
+    [SerializeField] private int botGoldCost;
+
+    [SerializeField] private int upgradeGoldCost;
+    [SerializeField] private int upgradeWoodCost;
+
 
     [Header("User Interface related")]
     [SerializeField] private RectTransform buildingUI;
@@ -44,13 +50,21 @@ public class HouseScript : MonoBehaviour
             buildingUI.gameObject.SetActive(true);
             //access building level text
             Text levelText = upgradeBuildingPanel.transform.Find("LevelText").GetComponent<Text>();
+            Text buildingText = upgradeBuildingPanel.transform.Find("BuildingText").GetComponent<Text>();
             levelText.text = GetCurrentBuildingLevel() + " / " + GetMaxBuildingLevel();
+            buildingText.fontSize = 40;
+            buildingText.text = "Building";
             Button upgradeButton = upgradeBuildingPanel.transform.Find("UpgradeButton").GetComponent<Button>();
+            upgradeBuildingPanel.gameObject.SetActive(true);
+            upgradeButton.onClick.RemoveAllListeners();
+
             upgradeButton.onClick.AddListener(UpgradeBuilding);
             //display produce bot panel
             Text botAmountText = createUnitPanel.transform.Find("BotAmountText").GetComponent<Text>();
             botAmountText.text = GetCurrentBotAmount() + " / " + GetMaxBotAmount();
             Button createUnitButton = createUnitPanel.transform.Find("CreateUnitButton").GetComponent<Button>();
+            createUnitButton.transform.parent.gameObject.SetActive(true);
+            createUnitButton.onClick.RemoveAllListeners();
             createUnitButton.onClick.AddListener(ProduceUnit);
             //display create unit button
         }

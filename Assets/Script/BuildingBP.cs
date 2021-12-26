@@ -18,7 +18,7 @@ public class BuildingBP : MonoBehaviour
         Renderer renderer = GetComponentInChildren<MeshRenderer>();
         renderer.material = buildingMaterial[0];
 
-        if(Physics.Raycast(ray, out hit, 50000.0f, (1 << 0))) {
+        if(Physics.Raycast(ray, out hit, 50000.0f, (1 << 7))) {
             transform.position = hit.point;
         }
 
@@ -26,9 +26,10 @@ public class BuildingBP : MonoBehaviour
     }
 
     private void Update() {
+        Debug.Log("Ray is casting");
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if(Physics.Raycast(ray, out hit, 50000.0f, (1 << 0))) {
+        if(Physics.Raycast(ray, out hit, 50000.0f, (1 << 7))) {
             transform.position = hit.point;
         }
 
